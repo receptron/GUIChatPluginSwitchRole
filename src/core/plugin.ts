@@ -3,29 +3,61 @@
  */
 
 import type { ToolPluginCore, ToolContext, ToolResult } from "gui-chat-protocol";
-import type { SwitchRoleArgs, SwitchRoleJsonData } from "./types";
+import type { Role, SwitchRoleArgs, SwitchRoleJsonData } from "./types";
 import { TOOL_DEFINITION, SYSTEM_PROMPT } from "./definition";
-import { getRoles, getRoleById } from "./roles";
 
 // Re-export for convenience
 export { TOOL_NAME, TOOL_DEFINITION, SYSTEM_PROMPT, createToolDefinition } from "./definition";
-export { DEFAULT_ROLES, setRoles, getRoles, getRoleById } from "./roles";
+
+/**
+ * Extended ToolContext with role-related app functions
+ */
+interface SwitchRoleToolContext extends ToolContext {
+  app?: ToolContext["app"] & {
+    getRoles?: () => Role[];
+    switchRole?: (roleId: string) => void;
+  };
+}
+
+/**
+ * Get roles from context.app (provided by the host app)
+ */
+function getRolesFromContext(context: SwitchRoleToolContext): Role[] {
+  if (typeof context.app?.getRoles === "function") {
+    return context.app.getRoles();
+  }
+  console.warn(
+    "switchRole: context.app.getRoles() not available, returning empty roles",
+  );
+  return [];
+}
+
+/**
+ * Get role by ID from context
+ */
+function getRoleByIdFromContext(
+  context: SwitchRoleToolContext,
+  id: string,
+): Role | undefined {
+  const roles = getRolesFromContext(context);
+  return roles.find((role) => role.id === id);
+}
 
 /**
  * Execute the switchRole function
  * Triggers a role switch via the app layer
  */
 export const executeSwitchRole = async (
-  _context: ToolContext,
+  context: SwitchRoleToolContext,
   args: SwitchRoleArgs,
 ): Promise<ToolResult<unknown, SwitchRoleJsonData>> => {
   const { role } = args;
-  const roles = getRoles();
+  const roles = getRolesFromContext(context);
   const availableRolesSummary = roles.map((r) => `${r.id} (${r.name})`).join(", ");
 
   try {
     // Validate role
-    const validRole = getRoleById(role);
+    const validRole = getRoleByIdFromContext(context, role);
     if (!validRole) {
       return {
         message: `Invalid role: ${role}`,
@@ -38,21 +70,14 @@ export const executeSwitchRole = async (
       };
     }
 
-    // Call switchRole asynchronously (don't await)
-    const globalObject = globalThis as typeof globalThis & {
-      switchRole?: (selectedRole: string) => void;
-    };
-
-    if (
-      typeof window !== "undefined" &&
-      typeof globalObject.switchRole === "function"
-    ) {
+    // Call switchRole via context.app (provided by the host app)
+    if (typeof context.app?.switchRole === "function") {
       // Fire and forget - this will disconnect and reconnect
       setTimeout(() => {
-        globalObject.switchRole?.(role);
+        context.app?.switchRole?.(role);
       }, 0);
     } else {
-      console.error("switchRole function not found on window object");
+      console.error("switchRole: context.app.switchRole() not available");
       return {
         message: "Failed to switch role: switchRole API not available",
         jsonData: {

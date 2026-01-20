@@ -5,9 +5,6 @@
 // Export plugin-specific types
 export type { Role, SwitchRoleArgs, SwitchRoleJsonData } from "./types";
 
-// Export role configuration
-export { DEFAULT_ROLES, setRoles, getRoles, getRoleById } from "./roles";
-
 // Export plugin utilities
 export {
   TOOL_NAME,
