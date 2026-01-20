@@ -26,10 +26,6 @@ export {
   createToolDefinition,
   executeSwitchRole,
   pluginCore,
-  DEFAULT_ROLES,
-  setRoles,
-  getRoles,
-  getRoleById,
 } from "../core/plugin";
 
 export { Preview };
