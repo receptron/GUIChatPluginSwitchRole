@@ -1,6 +1,6 @@
 {
   "name": "@gui-chat-plugin/switch-role",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Switch role plugin for GUIChat",
   "type": "module",
   "main": "./dist/index.cjs",
