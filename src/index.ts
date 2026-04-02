@@ -4,4 +4,4 @@
  * Main entry point - re-exports core module.
  */
 
-export * from "./core";
+export * from "./core/index";
