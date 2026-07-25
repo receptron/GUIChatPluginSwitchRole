@@ -11,8 +11,11 @@ This plugin allows users to switch between different AI assistant roles/personas
 ## Installation
 
 ```bash
-yarn add @gui-chat-plugin/switch-role
+yarn add @gui-chat-plugin/switch-role gui-chat-protocol
 ```
+
+> `gui-chat-protocol` is a peer dependency — install it alongside the plugin; the host application provides the runtime and this plugin only declares the compatible range.
+
 
 ## Usage
 
