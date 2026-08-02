@@ -22,8 +22,10 @@ interface SwitchRoleToolContext extends ToolContext {
 /**
  * Get roles from context.app (provided by the host app)
  */
-function getRolesFromContext(context: SwitchRoleToolContext): Role[] {
-  if (typeof context.app?.getRoles === "function") {
+function getRolesFromContext(
+  context: SwitchRoleToolContext | null | undefined,
+): Role[] {
+  if (typeof context?.app?.getRoles === "function") {
     return context.app.getRoles();
   }
   console.warn(
@@ -36,7 +38,7 @@ function getRolesFromContext(context: SwitchRoleToolContext): Role[] {
  * Get role by ID from context
  */
 function getRoleByIdFromContext(
-  context: SwitchRoleToolContext,
+  context: SwitchRoleToolContext | null | undefined,
   id: string,
 ): Role | undefined {
   const roles = getRolesFromContext(context);
@@ -47,8 +49,11 @@ function getRoleByIdFromContext(
  * Execute the switchRole function
  * Triggers a role switch via the app layer
  */
+// context is nullable on purpose: hosts that run the plugin without client-side
+// state (MulmoClaude's server bridge) pass an empty or missing context, and
+// reading through it unguarded threw a TypeError instead of returning a result.
 export const executeSwitchRole = async (
-  context: SwitchRoleToolContext,
+  context: SwitchRoleToolContext | null | undefined,
   args: SwitchRoleArgs,
 ): Promise<ToolResult<unknown, SwitchRoleJsonData>> => {
   const { role } = args;
@@ -71,10 +76,10 @@ export const executeSwitchRole = async (
     }
 
     // Call switchRole via context.app (provided by the host app)
-    if (typeof context.app?.switchRole === "function") {
+    if (typeof context?.app?.switchRole === "function") {
       // Fire and forget - this will disconnect and reconnect
       setTimeout(() => {
-        context.app?.switchRole?.(role);
+        context?.app?.switchRole?.(role);
       }, 0);
     } else {
       console.error("switchRole: context.app.switchRole() not available");
