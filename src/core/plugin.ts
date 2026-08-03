@@ -4,6 +4,7 @@
 
 import type { ToolPluginCore, ToolContext, ToolResult } from "gui-chat-protocol";
 import type { Role, SwitchRoleArgs, SwitchRoleJsonData } from "./types";
+import { isRoleList } from "./hostResponse";
 import { TOOL_DEFINITION, SYSTEM_PROMPT } from "./definition";
 
 // Re-export for convenience
@@ -14,7 +15,7 @@ export { TOOL_NAME, TOOL_DEFINITION, SYSTEM_PROMPT, createToolDefinition } from 
  */
 interface SwitchRoleToolContext extends ToolContext {
   app?: ToolContext["app"] & {
-    getRoles?: () => Role[];
+    getRoles?: () => unknown;
     switchRole?: (roleId: string) => void;
   };
 }
@@ -25,13 +26,21 @@ interface SwitchRoleToolContext extends ToolContext {
 function getRolesFromContext(
   context: SwitchRoleToolContext | null | undefined,
 ): Role[] {
-  if (typeof context?.app?.getRoles === "function") {
-    return context.app.getRoles();
+  if (typeof context?.app?.getRoles !== "function") {
+    console.warn(
+      "switchRole: context.app.getRoles() not available, returning empty roles",
+    );
+    return [];
   }
-  console.warn(
-    "switchRole: context.app.getRoles() not available, returning empty roles",
-  );
-  return [];
+
+  const roles = context.app.getRoles();
+  if (!isRoleList(roles)) {
+    console.warn(
+      "switchRole: context.app.getRoles() returned an unrecognized value, returning empty roles",
+    );
+    return [];
+  }
+  return roles;
 }
 
 /**
