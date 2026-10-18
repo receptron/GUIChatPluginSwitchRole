@@ -19,14 +19,7 @@ export const plugin: ToolPlugin<unknown, SwitchRoleJsonData, SwitchRoleArgs> = {
 export type { Role, SwitchRoleArgs, SwitchRoleJsonData } from "../core/types";
 
 // Re-export utilities
-export {
-  TOOL_NAME,
-  TOOL_DEFINITION,
-  SYSTEM_PROMPT,
-  createToolDefinition,
-  executeSwitchRole,
-  pluginCore,
-} from "../core/plugin";
+export { TOOL_NAME, TOOL_DEFINITION, SYSTEM_PROMPT, createToolDefinition, executeSwitchRole, pluginCore } from "../core/plugin";
 
 export { Preview };
 
