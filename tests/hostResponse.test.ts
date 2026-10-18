@@ -34,11 +34,7 @@ describe("isRoleList", () => {
 
   test("rejects values that are not a list", () => {
     [null, undefined, "ok", 7, {}].forEach((value) => {
-      assert.equal(
-        isRoleList(value),
-        false,
-        `should reject ${JSON.stringify(value)}`,
-      );
+      assert.equal(isRoleList(value), false, `should reject ${JSON.stringify(value)}`);
     });
   });
 });

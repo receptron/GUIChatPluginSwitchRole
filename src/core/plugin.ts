@@ -23,21 +23,15 @@ interface SwitchRoleToolContext extends ToolContext {
 /**
  * Get roles from context.app (provided by the host app)
  */
-function getRolesFromContext(
-  context: SwitchRoleToolContext | null | undefined,
-): Role[] {
+function getRolesFromContext(context: SwitchRoleToolContext | null | undefined): Role[] {
   if (typeof context?.app?.getRoles !== "function") {
-    console.warn(
-      "switchRole: context.app.getRoles() not available, returning empty roles",
-    );
+    console.warn("switchRole: context.app.getRoles() not available, returning empty roles");
     return [];
   }
 
   const roles = context.app.getRoles();
   if (!isRoleList(roles)) {
-    console.warn(
-      "switchRole: context.app.getRoles() returned an unrecognized value, returning empty roles",
-    );
+    console.warn("switchRole: context.app.getRoles() returned an unrecognized value, returning empty roles");
     return [];
   }
   return roles;
@@ -46,10 +40,7 @@ function getRolesFromContext(
 /**
  * Get role by ID from context
  */
-function getRoleByIdFromContext(
-  context: SwitchRoleToolContext | null | undefined,
-  id: string,
-): Role | undefined {
+function getRoleByIdFromContext(context: SwitchRoleToolContext | null | undefined, id: string): Role | undefined {
   const roles = getRolesFromContext(context);
   return roles.find((role) => role.id === id);
 }
@@ -98,8 +89,7 @@ export const executeSwitchRole = async (
           success: false,
           error: "switchRole API not available",
         },
-        instructions:
-          "Tell the user that the role switching feature is not available.",
+        instructions: "Tell the user that the role switching feature is not available.",
       };
     }
 
@@ -120,8 +110,7 @@ export const executeSwitchRole = async (
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      instructions:
-        "Acknowledge that there was an error switching roles and ask the user to try again.",
+      instructions: "Acknowledge that there was an error switching roles and ask the user to try again.",
     };
   }
 };

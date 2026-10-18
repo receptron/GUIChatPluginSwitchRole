@@ -13,9 +13,7 @@ export const TOOL_NAME = "switchRole";
  */
 export function createToolDefinition(roles: Role[]): ToolDefinition {
   const roleIds = roles.map((r) => r.id);
-  const roleOptionsDescription = roles
-    .map((r) => `'${r.id}' (${r.name})`)
-    .join(", ");
+  const roleOptionsDescription = roles.map((r) => `'${r.id}' (${r.name})`).join(", ");
 
   return {
     type: "function",
@@ -42,8 +40,7 @@ export function createToolDefinition(roles: Role[]): ToolDefinition {
 export const TOOL_DEFINITION: ToolDefinition = {
   type: "function",
   name: TOOL_NAME,
-  description:
-    "Switch the system prompt role and reconnect to the LLM. This changes the AI's personality and behavior.",
+  description: "Switch the system prompt role and reconnect to the LLM. This changes the AI's personality and behavior.",
   parameters: {
     type: "object",
     properties: {
