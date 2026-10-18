@@ -1,6 +1,7 @@
 # @gui-chat-plugin/switch-role
 
 [![npm version](https://badge.fury.io/js/%40gui-chat-plugin%2Fswitch-role.svg)](https://www.npmjs.com/package/@gui-chat-plugin/switch-role)
+[![scoria](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/receptron/GUIChatPluginSwitchRole/badges/scoria.json)](https://github.com/receptron/GUIChatPluginSwitchRole/actions/workflows/scoria.yml)
 
 A switch-role plugin for [MulmoChat](https://github.com/receptron/MulmoChat).
 
